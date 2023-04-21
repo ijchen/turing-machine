@@ -15,9 +15,26 @@ mod tape;
 mod transition;
 mod turing_machine;
 
+fn parse_args() -> Result<String, String> {
+    let args: Vec<String> = std::env::args().collect();
+
+    if args.len() != 2 {
+        return Err("invalid arguments - expected a single file path".to_string());
+    }
+
+    Ok(args.into_iter().nth(1).unwrap())
+}
+
 fn main() {
-    // TODO read the file path from env args
-    let schematic = match parse_turing_program("examples/accept.turing") {
+    let path = match parse_args() {
+        Ok(path) => path,
+        Err(msg) => {
+            eprintln!("{msg}");
+            return;
+        }
+    };
+
+    let schematic = match parse_turing_program(path) {
         Ok(schematic) => schematic,
         Err(msg) => {
             eprintln!("Something went wrong: {msg}");
