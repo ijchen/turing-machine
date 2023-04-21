@@ -1,0 +1,7 @@
+# Accept
+# Immediately halts in the ACCEPT state.
+
+INITIAL STATE: I
+BLANK SYMBOL: [ ]
+TRANSITIONS:
+I : ACC

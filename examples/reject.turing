@@ -1,0 +1,7 @@
+# Reject
+# Immediately halts in the REJECT state.
+
+INITIAL STATE: I
+BLANK SYMBOL: [ ]
+TRANSITIONS:
+I : REJ

@@ -17,7 +17,7 @@ mod turing_machine;
 
 fn main() {
     // TODO read the file path from env args
-    let schematic = match parse_turing_program("examples/leq.turing") {
+    let schematic = match parse_turing_program("examples/accept.turing") {
         Ok(schematic) => schematic,
         Err(msg) => {
             eprintln!("Something went wrong: {msg}");
