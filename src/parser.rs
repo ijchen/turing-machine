@@ -113,3 +113,29 @@ pub fn parse_turing_program<P: AsRef<Path>>(path: P) -> Result<TuringMachineSche
         transitions,
     ))
 }
+
+/// Reads the contents of a tape from stdin
+///
+/// The expected input is the symbol for the home position, followed immediately
+/// by the symbols to the right of the home position from left to right,
+/// followed by a newline character (either \n or \r\n), followed by the symbols
+/// to the left of the home position from right to left, then end of input.
+pub fn read_tape() -> Result<(Vec<Symbol>, Vec<Symbol>), String> {
+    println!("Enter the input symbols from (and including) the home position moving to the right:");
+    let right_symbols = match std::io::stdin().lines().next() {
+        Some(Ok(line)) => Ok(line),
+        Some(Err(err)) => Err(err.to_string()),
+        None => Err("failed to read line from stdin".to_string()),
+    }?;
+    println!("Enter the input symbols from (but excluding) the home position moving to the left:");
+    let left_symbols = match std::io::stdin().lines().next() {
+        Some(Ok(line)) => Ok(line),
+        Some(Err(err)) => Err(err.to_string()),
+        None => Err("failed to read line from stdin".to_string()),
+    }?;
+
+    Ok((
+        right_symbols.chars().map(Symbol::new).collect(),
+        left_symbols.chars().map(Symbol::new).collect(),
+    ))
+}
