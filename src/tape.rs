@@ -40,6 +40,10 @@ impl Tape {
         }
     }
 
+    pub fn head_pos(&self) -> isize {
+        self.head_pos
+    }
+
     /// Reads the symbol at the head's current position on the tape
     pub fn read(&self) -> Symbol {
         if self.head_pos.is_negative() {
@@ -74,6 +78,21 @@ impl Tape {
                 self.head_pos += 1;
             }
             Movement::Stay => { /* Nothing to do here */ }
+        }
+    }
+
+    /// Reads the symbol at the given position on the tape
+    pub fn read_pos(&self, pos: isize) -> Symbol {
+        if pos.is_negative() {
+            *self
+                .left_symbols
+                .get((-pos - 1) as usize)
+                .unwrap_or(&self.blank_symbol)
+        } else {
+            *self
+                .right_symbols
+                .get(pos as usize)
+                .unwrap_or(&self.blank_symbol)
         }
     }
 }

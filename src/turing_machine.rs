@@ -1,5 +1,7 @@
 use std::{collections::HashMap, fmt::Display, rc::Rc};
 
+use static_assertions::const_assert;
+
 use crate::{
     state_symbol_movement::{State, Symbol},
     tape::Tape,
@@ -106,5 +108,41 @@ impl TuringMachine {
     /// machine hasn't halted
     pub fn halt_kind(&self) -> Option<HaltKind> {
         self.halt_kind
+    }
+
+    /// Returns a string containing a visual representation of the turing
+    /// machine's current tape and state
+    pub fn visualize(&self) -> String {
+        const SIDE_LEN: usize = 20;
+
+        let len = SIDE_LEN * 4 + 15;
+        let mut buffer = String::with_capacity(len);
+
+        buffer += "   ";
+        let start_pos = self.tape.head_pos() - SIDE_LEN as isize;
+        let end_pos = self.tape.head_pos() + SIDE_LEN as isize;
+        for pos in start_pos..=end_pos {
+            buffer.push(*self.tape.read_pos(pos))
+        }
+        buffer += "   ";
+
+        buffer += "\n";
+
+        buffer += "...";
+        for _ in 0..SIDE_LEN {
+            buffer.push(' ');
+        }
+        buffer += "^ state: ";
+        buffer.push(*self.state);
+        const_assert!(SIDE_LEN - " state: ".len() >= 1);
+        for _ in 0..SIDE_LEN - " state: ".len() {
+            buffer.push(' ');
+        }
+        buffer += "...";
+
+        // Just to make sure the math is right
+        // assert!(buffer.len() == len);
+
+        buffer
     }
 }

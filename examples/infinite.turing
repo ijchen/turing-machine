@@ -1,0 +1,8 @@
+# Infinite
+# Loops infinitely, never halting.
+
+INITIAL STATE: A
+BLANK SYMBOL: [ ]
+TRANSITIONS:
+A :  >B
+B :  <A

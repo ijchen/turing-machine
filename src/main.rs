@@ -55,6 +55,18 @@ fn main() {
     let mut turing_machine = TuringMachine::new(&schematic, tape);
 
     while !turing_machine.halted() {
+        // Clear the screen, and place the cursor at the top-left
+        print!("\x1B[2J\x1B[1;1H");
+
+        // Print a visualization of the turing machine's current tape and state
+        println!("TURING MACHINE:");
+        println!("{}", turing_machine.visualize());
+
+        let sleep_time = 100;
+        if sleep_time > 0 {
+            std::thread::sleep(std::time::Duration::from_millis(sleep_time));
+        }
+
         turing_machine.step();
     }
 
