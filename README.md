@@ -1,6 +1,19 @@
 A [turing machine](https://en.wikipedia.org/wiki/Turing_machine) simulation, written in Rust.
 
-`cargo run -r -- examples/leq.turing < examples/leq.stdin`
+The program expects a `.turing` file path as an argument, the format of which is
+overviewed below. The input (initial symbols on the tape) is then expected on
+stdin - first the "home position" (where the head starts) symbol and symbols to
+the right, then after a newline the symbols to the left of the home position
+moving left.
+```
+cargo run -r -- examples/add.turing < examples/add.stdin
+```
+
+The `.turing` file contains the program the turing machine should run. It is a
+text format that represents states and symbols with single characters. It
+specifies the initial state, what symbol is the "blank" symbol, and the
+transitions from (state, symbol) to (new symbol, movement, new state). See
+[examples](examples) for detailed examples.
 
 # License
 

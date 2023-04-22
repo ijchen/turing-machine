@@ -69,7 +69,7 @@ c7: 6<d # If we hit a 7, decrement it to 6 and go increment the first number
 c8: 7<d # If we hit a 8, decrement it to 7 and go increment the first number
 c9: 8<d # If we hit a 9, decrement it to 8 and go increment the first number
 c0: 9<c # If we hit a 0, add 9 and decrement the next digit over (10x this one)
-c :  >i # Underflow indicates decrementing 0 - we're done adding
+c :  >i # Overflow indicates decrementing 0 - we're done adding
 d0: 0<d # Still going through second number, keep sliding right
 d1: 1<d # Still going through second number, keep sliding right
 d2: 2<d # Still going through second number, keep sliding right
@@ -232,7 +232,7 @@ h9:  >9 # Print the blank in-between symbol and copy 9 right
 8 : 8=c # Done shifting - print the previous 8 and continue adding
 9 : 9=c # Done shifting - print the previous 9 and continue adding
 
-# Erase underflow 9s from the second number and return to the home position
+# Erase overflow 9s from the second number and return to the home position
 # FROM                            ⌂                                             
 #...                              69420 99999                                ...
 #...                                    ^ state: i                           ...
@@ -240,7 +240,7 @@ h9:  >9 # Print the blank in-between symbol and copy 9 right
 #...                                    69420                                ...
 #...                                    ^ state: l                           ...
 i9:  >i # Erase the 9 and keep erasing 9s
-i :  <j # Hit the end of the underflow 9s, go left until we hit the sum
+i :  <j # Hit the end of the overflow 9s, go left until we hit the sum
 j :  <j # Keep sliding left until we hit the sum
 j0: 0<k # Hit the sum - go left until we hit the start of the sum
 j1: 1<k # Hit the sum - go left until we hit the start of the sum
