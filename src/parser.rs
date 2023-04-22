@@ -37,6 +37,44 @@ fn parse_transitions_line(line: &str, line_num: usize) -> Result<(), String> {
     Ok(())
 }
 
+fn parse_transition_line(
+    line: &str,
+    line_num: usize,
+    transitions: &mut HashMap<(State, Symbol), Transition>,
+) -> Result<(), String> {
+    let chars: Vec<char> = line.chars().collect();
+    if chars.len() < "1x: y>2".len() || chars[2..4] != [':', ' '] {
+        return Err(format!("malformed transition on line {line_num}"));
+    }
+
+    let from_state = State::new(chars[0]);
+    let from_symbol = Symbol::new(chars[1]);
+
+    // Ensure we haven't already encountered this transition
+    if transitions.contains_key(&(from_state, from_symbol)) {
+        return Err(format!("duplicate transition on line {line_num} from state '{from_state}' and symbol '{from_symbol}'"));
+    }
+
+    let transition = match (chars[4], chars[5], chars[6]) {
+        ('A', 'C', 'C') => Transition::Halting(HaltKind::Accept),
+        ('R', 'E', 'J') => Transition::Halting(HaltKind::Reject),
+        (symbol_to_write, movement, new_state) => Transition::NonHalting {
+            symbol_to_write: Symbol::new(symbol_to_write),
+            new_state: State::new(new_state),
+            movement: match movement {
+                '<' => Movement::Left,
+                '>' => Movement::Right,
+                '=' => Movement::Stay,
+                movement => return Err(format!("invalid movement direction '{movement}'")),
+            },
+        },
+    };
+
+    transitions.insert((from_state, from_symbol), transition);
+
+    Ok(())
+}
+
 /// Constructs a new TuringMachineSchematic from a .turing file
 ///
 /// # Errors
@@ -75,35 +113,7 @@ pub fn parse_turing_program<P: AsRef<Path>>(path: P) -> Result<TuringMachineSche
     // Parse the transitions
     let mut transitions: HashMap<(State, Symbol), Transition> = HashMap::new();
     for (line, line_number) in lines {
-        let chars: Vec<char> = line.chars().collect();
-        if chars.len() != "1x: y>2".len() || chars[2..4] != [':', ' '] {
-            return Err(format!("malformed transition on line {line_number}"));
-        }
-
-        let from_state = State::new(chars[0]);
-        let from_symbol = Symbol::new(chars[1]);
-
-        // Ensure we haven't already encountered this transition
-        if transitions.contains_key(&(from_state, from_symbol)) {
-            return Err(format!("duplicate transition on line {line_number} from state '{from_state}' and symbol '{from_symbol}'"));
-        }
-
-        let transition = match (chars[4], chars[5], chars[6]) {
-            ('A', 'C', 'C') => Transition::Halting(HaltKind::Accept),
-            ('R', 'E', 'J') => Transition::Halting(HaltKind::Reject),
-            (symbol_to_write, movement, new_state) => Transition::NonHalting {
-                symbol_to_write: Symbol::new(symbol_to_write),
-                new_state: State::new(new_state),
-                movement: match movement {
-                    '<' => Movement::Left,
-                    '>' => Movement::Right,
-                    '=' => Movement::Stay,
-                    movement => return Err(format!("invalid movement direction '{movement}'")),
-                },
-            },
-        };
-
-        transitions.insert((from_state, from_symbol), transition);
+        parse_transition_line(line, line_number, &mut transitions)?;
     }
 
     // Construct and return the turing machine schematic
