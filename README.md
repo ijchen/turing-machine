@@ -1,5 +1,7 @@
 A [turing machine](https://en.wikipedia.org/wiki/Turing_machine) simulation, written in Rust.
 
+`cargo run -r -- examples/leq.turing < examples/leq.stdin`
+
 # License
 
 Licensed under either of
